@@ -3,6 +3,9 @@
 namespace Mchervenkov\Inout;
 
 use Illuminate\Support\ServiceProvider;
+use Mchervenkov\Inout\Commands\SyncCities;
+use Mchervenkov\Inout\Commands\SyncCompanyCouriers;
+use Mchervenkov\Inout\Commands\SyncCountries;
 
 class InoutServiceProvider extends ServiceProvider
 {
@@ -18,27 +21,25 @@ class InoutServiceProvider extends ServiceProvider
             $this->publishes([
                 __DIR__ . '/../config/inout.php' => config_path('inout.php'),
             ], 'inout-config');
-//
-//            $this->publishes([
-//                __DIR__ . '/../database/migrations/' => database_path('migrations'),
-//            ], 'sameday-migrations');
-//
-//            $this->publishes([
-//                __DIR__ . '/Models/' => app_path('Models'),
-//            ], 'sameday-models');
-//
-//            $this->publishes([
-//                __DIR__ . '/Commands/' => app_path('Console/Commands'),
-//            ], 'sameday-commands');
-//
-//            // Registering package commands.
-//            $this->commands([
-//                GetSamedayCounties::class,
-//                GetSamedayCities::class,
-//                GetSamedayLockers::class,
-//                GetSamedayApiStatus::class,
-//                MapSamedayCities::class,
-//            ]);
+
+            $this->publishes([
+                __DIR__ . '/../database/migrations/' => database_path('migrations'),
+            ], 'inout-migrations');
+
+            $this->publishes([
+                __DIR__ . '/Models/' => app_path('Models'),
+            ], 'inout-models');
+
+            $this->publishes([
+                __DIR__ . '/Commands/' => app_path('Console/Commands'),
+            ], 'inout-commands');
+
+            // Registering package commands.
+            $this->commands([
+                SyncCities::class,
+                SyncCompanyCouriers::class,
+                SyncCountries::class,
+            ]);
         }
     }
 

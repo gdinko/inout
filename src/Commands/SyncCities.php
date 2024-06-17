@@ -61,7 +61,7 @@ class SyncCities extends Command
 
             $this->insertCities($inout, $city, $countryId);
 
-            $this->info('Status: ' . self::API_STATUS_OK);
+            $this->info(PHP_EOL . 'Status: ' . self::API_STATUS_OK);
 
         } catch (\Exception $e) {
 
@@ -89,9 +89,17 @@ class SyncCities extends Command
         $response = $inout->getCities($city, $countryId);
 
         if (! empty($response)) {
+
+            $bar = $this->output->createProgressBar(
+                count($response)
+            );
+
             foreach ($response as $city) {
                 InoutCity::create($this->getCityData($city));
+                $bar->advance();
             }
+
+            $bar->finish();
         }
     }
 

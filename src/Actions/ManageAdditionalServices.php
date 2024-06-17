@@ -22,7 +22,9 @@ trait ManageAdditionalServices
      */
     public function codInformation(string $referenceNumber): mixed
     {
-        return $this->get("check-cod-by-order/$referenceNumber?testMode=$this->testMode");
+        return $this->get("check-cod-by-order/$referenceNumber", [
+            'testMode' => $this->testMode
+        ]);
     }
 
     /**
@@ -37,6 +39,8 @@ trait ManageAdditionalServices
      */
     public function phoneCallHistory(string $awbNumber): mixed
     {
-        return $this->get("check-actions/$awbNumber?testMode=$this->testMode");
+        return $this->get("check-actions/$awbNumber", [
+            'testMode' => $this->testMode
+        ]);
     }
 }

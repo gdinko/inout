@@ -19,12 +19,12 @@ return [
     /**
      * Default Inout test base url
      */
-    'test_base_url' => rtrim(env('INOUT_API_TEST_BASE_URI', ' https://test-api.inout.bg/api/v1'), '/'),
+    'test_base_url' => rtrim(env('INOUT_API_TEST_BASE_URI', 'https://test-api.inout.bg/api/v1'), '/'),
 
     /**
      * Default Inout production base url
      */
-    'production_base_url' => rtrim(env('INOUT_API_PRODUCTION_BASE_URI', ' https://api1.inout.bg/api/v1'), '/'),
+    'production_base_url' => rtrim(env('INOUT_API_PRODUCTION_BASE_URI', 'https://api1.inout.bg/api/v1'), '/'),
 
     /**
      * Set Inout Company ID

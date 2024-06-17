@@ -11,7 +11,7 @@ class City
 {
     use HasPagination;
 
-    protected $params = [];
+    private $params;
 
     /**
      * __construct

@@ -2,10 +2,7 @@
 
 namespace Mchervenkov\Inout\Actions;
 
-use Illuminate\Validation\ValidationException;
 use Mchervenkov\Inout\Exceptions\InoutException;
-use Mchervenkov\Inout\Exceptions\InoutValidationException;
-use Mchervenkov\Inout\Hydrators\City;
 
 trait ManageCouriers
 {
@@ -24,19 +21,17 @@ trait ManageCouriers
     }
 
     /**
-     * We can now offer you the ability to ask for cities directly from your company’s software or
-     * website by taking advantage of "Cities Web Service".
+     * We can now offer you the ability to ask for courier offices directly from your company’s software or
+     * website by taking advantage of "Courier Offices Web Service".
      *
-     * GET / Cities_Web_Service_v1.0
+     * GET / Courier_Offices_Web_Service_v1.2
      *
-     * @param City $city
-     * @param int $countryId
+     * @param int $courierId
      * @return mixed
      * @throws InoutException
-     * @throws InoutValidationException
      */
-    public function getCities(City $city, int $countryId): mixed
+    public function getCourierOffices(int $courierId): mixed
     {
-        return $this->get("get-cities/$countryId?" . http_build_query($city->validated()));
+        return $this->get("offices-by-courier/$courierId");
     }
 }

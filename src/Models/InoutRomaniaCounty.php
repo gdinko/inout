@@ -7,27 +7,25 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Mchervenkov\Inout\Models\InoutCountry
+ * Mchervenkov\Inout\Models\InoutRomaniaCounty
  *
  * @property int $id
- * @property int $country_id
+ * @property int $county_id
+ * @property string $abr
  * @property string $name
- * @property string $cyrillic_name
- * @property string $iso_code
  * @method static Builder|InoutCompanyCourier create(array $attributes)
  * @method static Builder|InoutCompanyCourier where($column, $operator = null, $value = null, $boolean = 'and')
  */
 
-class InoutCountry extends Model
+class InoutRomaniaCounty extends Model
 {
     use HasFactory;
 
-    protected $table = 'inout_countries';
+    protected $table = 'inout_romania_counties';
 
     protected $fillable = [
-        'country_id',
-        'name',
-        'cyrillic_name',
-        'iso_code',
+        'county_id',
+        'abr',
+        'name'
     ];
 }

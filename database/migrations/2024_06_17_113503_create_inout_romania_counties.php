@@ -13,14 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('inout_company_couriers', function (Blueprint $table) {
+        Schema::create('inout_romania_counties', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('courier_id');
-            $table->string('name', 255);
-            $table->tinyInteger('to_office')->default(0);
-            $table->tinyInteger('to_address')->default(0);
-            $table->string('country', 255);
-            $table->string('currency', 255);
+            $table->unsignedBigInteger('county_id')->nullable();
+            $table->string('abr', 255)->nullable();
+            $table->string('name', 255)->nullable();
             $table->timestamps();
         });
     }
@@ -32,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('inout_company_couriers');
+        Schema::dropIfExists('inout_romania_counties');
     }
 };

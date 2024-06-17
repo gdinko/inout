@@ -50,6 +50,7 @@ class Inout
         $this->apiToken = config('inout.api_token');
         $this->testMode = config('inout.test_mode');
         $this->companyId = config('inout.company_id');
+        $this->timeout = config('inout.timeout');
         $this->configBaseUrl();
     }
 
