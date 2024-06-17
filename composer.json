@@ -1,0 +1,64 @@
+{
+    "name": "mchervenkov/inout",
+    "description": "Laravel InOut API Wrapper",
+    "keywords": [
+        "mchervenkov",
+        "InOut",
+        "InOut laravel",
+        "laravel"
+    ],
+    "homepage": "https://github.com/gdinko/inout",
+    "license": "MIT",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Mario Chervenkov",
+            "email": "mario.chervenkov@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Mchervenkov\\Inout\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Mchervenkov\\Inout\\Tests\\": "tests"
+        }
+    },
+    "require": {
+        "php": "^8.0|^8.1|^8.2",
+        "guzzlehttp/guzzle": "^7.4",
+        "illuminate/support": "^8.0|^9.0|^10.0"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^8.18",
+        "pestphp/pest": "^2.34",
+        "larastan/larastan": "^2.9"
+    },
+    "scripts": {
+        "analyse": "vendor/bin/phpstan analyse",
+        "test": "vendor/bin/pest",
+        "test-coverage": "vendor/bin/pest --coverage"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Mchervenkov\\Inout\\InoutServiceProvider"
+            ],
+            "aliases": {
+                "Inout": "Mchervenkov\\Inout\\Facades\\Inout"
+            }
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true,
+            "phpstan/extension-installer": true
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "version": "1.0.0"
+}
