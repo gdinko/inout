@@ -24,6 +24,7 @@ class MapInoutCities extends Command
      * @var string
      */
     protected $signature = 'inout:map-cities
+                            {courier_id : Inout Courier Id}
                             {country_code : Country ALPHA 2 ISO 3166 code}
                             {--timeout=20 : Inout API Call timeout}';
 
@@ -96,11 +97,14 @@ class MapInoutCities extends Command
 
         $countryCode = $this->argument('country_code');
 
-        /** @var InoutCountry $country */
-        $country = $this->getCountry($countryCode);
-        $couriers = $this->getCouriersByCountry($country->name);
+        /** @var InoutCompanyCourier $courier */
+        $courier = $this->getCourier();
 
-        if ($couriers->isNotEmpty()) {
+        if ($courier) {
+
+            /** @var InoutCountry $country */
+            $country = $this->getCountry($countryCode);
+
             CarrierCityMap::where(
                 'carrier_signature',
                 $inout->getSignature()
@@ -108,71 +112,67 @@ class MapInoutCities extends Command
                 ->where('country_code', strtoupper($countryCode))
                 ->delete();
 
-            /** @var InoutCompanyCourier $courier */
-            foreach ($couriers as $courier) {
+            if($courier->offices->isNotEmpty()) {
 
-                if($courier->offices->isNotEmpty()) {
+                $this->info("Map Cities for Courier: {$courier->name}");
 
-                    $this->info("Map Cities for Courier: {$courier->name}");
+                $bar = $this->output->createProgressBar(
+                    count($courier->offices)
+                );
 
-                    $bar = $this->output->createProgressBar(
-                        count($courier->offices)
-                    );
+                $bar->start();
 
-                    $bar->start();
+                try {
 
-                    try {
+                    /** @var InoutCourierOffice $office */
+                    foreach ($courier->offices as $office) {
 
-                        /** @var InoutCourierOffice $office */
-                        foreach ($courier->offices as $office) {
-
-                            $name = $this->normalizeCityName(
-                                $office->city->name_local
-                            );
-
-                            $nameSlug = $this->getSlug($name);
-
-                            $slug = $this->getSlug(
-                                $nameSlug . ' ' . $office->city->postal_code
-                            );
-
-                            $data = [
-                                'carrier_signature' => $inout->getSignature(),
-                                'carrier_city_id' => $office->city->city_id,
-                                'country_code' => $country->iso_code,
-                                'region' => Str::title($office->region),
-                                'name' => $name,
-                                'name_slug' => $nameSlug,
-                                'post_code' => $office->city->postal_code,
-                                'slug' => $slug,
-                                'uuid' => $this->getUuid($slug),
-                            ];
-
-                            CarrierCityMap::create(
-                                $data
-                            );
-
-                            $office->city_uuid = $data['uuid'];
-                            $office->save();
-
-                            $bar->advance();
-                        }
-
-                    } catch (InoutImportValidationException $eive) {
-                        $this->newLine();
-                        $this->error(
-                            $eive->getMessage()
+                        $name = $this->normalizeCityName(
+                            $office->city->name_en
                         );
-                        $this->info(
-                            print_r($eive->getData(), true)
+
+                        $nameSlug = $this->getSlug($name);
+
+                        $slug = $this->getSlug(
+                            $nameSlug . ' ' . $office->city->postal_code
                         );
-                        $this->error(
-                            print_r($eive->getErrors(), true)
+
+                        $data = [
+                            'carrier_signature' => $inout->getSignature(),
+                            'carrier_city_id' => $office->city->city_id,
+                            'country_code' => $country->iso_code,
+                            'region' => Str::title($office->region),
+                            'name' => $name,
+                            'name_slug' => $nameSlug,
+                            'post_code' => $office->city->postal_code,
+                            'slug' => $slug,
+                            'uuid' => $this->getUuid($slug),
+                        ];
+
+                        CarrierCityMap::create(
+                            $data
                         );
+
+                        $office->city_uuid = $data['uuid'];
+                        $office->save();
+
+                        $bar->advance();
                     }
 
-                    $bar->finish();
+                } catch (InoutImportValidationException $eive) {
+                    $this->newLine();
+                    $this->error(
+                        $eive->getMessage()
+                    );
+                    $this->info(
+                        print_r($eive->getData(), true)
+                    );
+                    $this->error(
+                        print_r($eive->getErrors(), true)
+                    );
                 }
+
+                $bar->finish();
             }
         }
 
@@ -220,7 +220,7 @@ class MapInoutCities extends Command
     /**
      * @return Inout
      */
-    private function initInoutClient(): Inout
+    protected function initInoutClient(): Inout
     {
         $inout = new Inout();
 
@@ -235,24 +235,25 @@ class MapInoutCities extends Command
      * @param string $countryCode
      * @return Model
      */
-    private function getCountry(string $countryCode): Model
+    protected function getCountry(string $countryCode): Model
     {
         return InoutCountry::query()
-            ->where('is_code', $countryCode)
+            ->where('iso_code', $countryCode)
             ->firstOrFail();
     }
 
     /**
-     * @param string $countryName
-     * @return Collection
+     * @return Model|null
      */
-    private function getCouriersByCountry(string $countryName): Collection
+    protected function getCourier(): Model|null
     {
+        $countryCode = $this->argument('courier_id');
+
         return InoutCompanyCourier::query()
-            ->where('country', $countryName)
+            ->where('courier_id', $countryCode)
             ->with([
                 'offices.city'
             ])
-            ->get();
+            ->first();
     }
 }

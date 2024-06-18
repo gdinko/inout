@@ -4,6 +4,7 @@ namespace Mchervenkov\Inout\Commands;
 
 use Carbon\Carbon;
 use Illuminate\Console\Command;
+use Illuminate\Support\Str;
 use Mchervenkov\Inout\Exceptions\InoutException;
 use Mchervenkov\Inout\Inout;
 use Mchervenkov\Inout\Models\InoutCompanyCourier;
@@ -95,7 +96,7 @@ class SyncCompanyCouriers extends Command
      *
      * @return void
      */
-    private function clear()
+    protected function clear()
     {
         if ($days = $this->option('clear')) {
             $clearDate = Carbon::now()->subDays($days)->format('Y-m-d H:i:s');
@@ -111,7 +112,7 @@ class SyncCompanyCouriers extends Command
     /**
      * @return Inout
      */
-    private function initInoutClient(): Inout
+    protected function initInoutClient(): Inout
     {
         $inout = new Inout();
 
@@ -126,7 +127,7 @@ class SyncCompanyCouriers extends Command
      * @param array $data
      * @return array
      */
-    private function getCourierData(array $data): array
+    protected function getCourierData(array $data): array
     {
         $name = data_get($data, 'NAME');
 
@@ -145,10 +146,8 @@ class SyncCompanyCouriers extends Command
      * @param string $courierName
      * @return string
      */
-    private function getSignature(string $courierName): string
+    protected function getSignature(string $courierName): string
     {
-        $toUpper = strtoupper(trim($courierName));
-
-        return 'INOUT_' . str_replace(' ', '_', $toUpper);
+        return "INOUT_" . Str::upper(Str::snake($courierName));
     }
 }

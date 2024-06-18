@@ -13,9 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('inout_romania_counties', function (Blueprint $table) {
+        Schema::create('inout_counties', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('county_id')->nullable();
+            $table->unsignedBigInteger('county_id')->nullable()->index();
             $table->string('abr', 255)->nullable();
             $table->string('name', 255)->nullable();
             $table->timestamps();
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('inout_romania_counties');
+        Schema::dropIfExists('inout_counties');
     }
 };

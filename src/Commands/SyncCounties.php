@@ -6,9 +6,9 @@ use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Mchervenkov\Inout\Exceptions\InoutException;
 use Mchervenkov\Inout\Inout;
-use Mchervenkov\Inout\Models\InoutRomaniaCounty;
+use Mchervenkov\Inout\Models\InoutCounty;
 
-class SyncRomaniaCounties extends Command
+class SyncCounties extends Command
 {
     public const API_STATUS_OK = 200;
     public const API_STATUS_NOT_OK = 404;
@@ -18,7 +18,8 @@ class SyncRomaniaCounties extends Command
      *
      * @var string
      */
-    protected $signature = 'inout:sync-romania-counties
+    protected $signature = 'inout:sync-counties
+                            {country_id : Inout Country Id}
                             {--clear= : Clear Database table from records older than X days}
                             {--timeout=5 : Inout API Call timeout}';
 
@@ -46,7 +47,7 @@ class SyncRomaniaCounties extends Command
      */
     public function handle()
     {
-        $this->info('-> Inout Romania Counties');
+        $this->info('-> Inout Counties');
 
         try {
 
@@ -79,7 +80,9 @@ class SyncRomaniaCounties extends Command
      */
     protected function insertCounties(Inout $inout) : void
     {
-        $response = $inout->getRomaniaCounties();
+        $countryId = $this->argument('country_id');
+
+        $response = $inout->getCounties($countryId);
 
         if (! empty($response)) {
 
@@ -90,7 +93,7 @@ class SyncRomaniaCounties extends Command
             foreach ($response as $county) {
                 $county['country_id'] = data_get($county, 'id');
 
-                InoutRomaniaCounty::create($county);
+                InoutCounty::create($county);
                 $bar->advance();
             }
 
@@ -103,14 +106,14 @@ class SyncRomaniaCounties extends Command
      *
      * @return void
      */
-    private function clear()
+    protected function clear()
     {
         if ($days = $this->option('clear')) {
             $clearDate = Carbon::now()->subDays($days)->format('Y-m-d H:i:s');
 
-            $this->info("-> Inout Romania Counties: Clearing entries older than: $clearDate");
+            $this->info("-> Inout Counties: Clearing entries older than: $clearDate");
 
-            InoutRomaniaCounty::query()
+            InoutCounty::query()
                 ->where('created_at', '<=', $clearDate)
                 ->delete();
         }
@@ -119,7 +122,7 @@ class SyncRomaniaCounties extends Command
     /**
      * @return Inout
      */
-    private function initInoutClient(): Inout
+    protected function initInoutClient(): Inout
     {
         $inout = new Inout();
 

@@ -8,7 +8,7 @@ use Mchervenkov\Inout\Commands\SyncCities;
 use Mchervenkov\Inout\Commands\SyncCompanyCouriers;
 use Mchervenkov\Inout\Commands\SyncCountries;
 use Mchervenkov\Inout\Commands\SyncCourierOffices;
-use Mchervenkov\Inout\Commands\SyncRomaniaCounties;
+use Mchervenkov\Inout\Commands\SyncCounties;
 
 class InoutServiceProvider extends ServiceProvider
 {
@@ -43,7 +43,7 @@ class InoutServiceProvider extends ServiceProvider
                 SyncCompanyCouriers::class,
                 SyncCountries::class,
                 SyncCourierOffices::class,
-                SyncRomaniaCounties::class,
+                SyncCounties::class,
                 MapInoutCities::class,
             ]);
         }

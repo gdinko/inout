@@ -108,7 +108,7 @@ class SyncCities extends Command
      *
      * @return void
      */
-    private function clear()
+    protected function clear()
     {
         if ($days = $this->option('clear')) {
             $clearDate = Carbon::now()->subDays($days)->format('Y-m-d H:i:s');
@@ -124,7 +124,7 @@ class SyncCities extends Command
     /**
      * @return Inout
      */
-    private function initInoutClient(): Inout
+    protected function initInoutClient(): Inout
     {
         $inout = new Inout();
 
@@ -138,7 +138,7 @@ class SyncCities extends Command
     /**
      * @return City
      */
-    private function initCityHydrator(): City
+    protected function initCityHydrator(): City
     {
         return new City([
             'paging' => 0
@@ -149,7 +149,7 @@ class SyncCities extends Command
      * @param array $data
      * @return array
      */
-    private function getCityData(array $data): array
+    protected function getCityData(array $data): array
     {
         return [
             'city_id' => data_get($data, 'ID'),

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Mchervenkov\Inout\Models\InoutRomaniaCounty
+ * Mchervenkov\Inout\Models\InoutCounty
  *
  * @property int $id
  * @property int $county_id
@@ -17,11 +17,11 @@ use Illuminate\Database\Eloquent\Model;
  * @method static Builder|InoutCompanyCourier where($column, $operator = null, $value = null, $boolean = 'and')
  */
 
-class InoutRomaniaCounty extends Model
+class InoutCounty extends Model
 {
     use HasFactory;
 
-    protected $table = 'inout_romania_counties';
+    protected $table = 'inout_counties';
 
     protected $fillable = [
         'county_id',

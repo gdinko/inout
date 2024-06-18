@@ -67,6 +67,6 @@ class  InoutCourierOffice extends Model
      */
     public function city(): BelongsTo
     {
-        return $this->belongsTo(InoutCity::class, 'city_id', 'id');
+        return $this->belongsTo(InoutCity::class, 'city_id', 'city_id');
     }
 }

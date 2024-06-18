@@ -93,7 +93,7 @@ class SyncCountries extends Command
      *
      * @return void
      */
-    private function clear()
+    protected function clear()
     {
         if ($days = $this->option('clear')) {
             $clearDate = Carbon::now()->subDays($days)->format('Y-m-d H:i:s');
@@ -109,7 +109,7 @@ class SyncCountries extends Command
     /**
      * @return Inout
      */
-    private function initInoutClient(): Inout
+    protected function initInoutClient(): Inout
     {
         $inout = new Inout();
 
@@ -124,7 +124,7 @@ class SyncCountries extends Command
      * @param array $data
      * @return array
      */
-    private function getCountryData(array $data): array
+    protected function getCountryData(array $data): array
     {
         return [
             'country_id' => data_get($data, 'ID'),

@@ -47,6 +47,6 @@ class InoutCompanyCourier extends Model
      */
     public function offices(): HasMany
     {
-        return $this->hasMany(InoutCourierOffice::class, 'courier_id', 'id');
+        return $this->hasMany(InoutCourierOffice::class, 'courier_id', 'courier_id');
     }
 }

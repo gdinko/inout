@@ -60,20 +60,6 @@ trait ManageLocations
     }
 
     /**
-     * We can now offer you the ability to ask for counties of Romania directly from your company’s software or
-     * website by taking advantage of "Counties Romania Web Service".
-     *
-     * GET / Counties_Romania_Web_Service_v1.0
-     *
-     * @return mixed
-     * @throws InoutException
-     */
-    public function getRomaniaCounties(): mixed
-    {
-        return $this->getCounties(1);
-    }
-
-    /**
      * Most of the countries doesn't have county. For more specific data use actions is country prefix.
      * Ex. getRomaniaCounties()
      *

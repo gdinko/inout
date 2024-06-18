@@ -5,6 +5,7 @@ namespace Mchervenkov\Inout\Commands;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Schema;
 use Mchervenkov\Inout\Exceptions\InoutException;
 use Mchervenkov\Inout\Inout;
@@ -22,6 +23,7 @@ class SyncCourierOffices extends Command
      * @var string
      */
     protected $signature = 'inout:sync-courier-offices
+                            {courier_id : Inout Courier Id}
                             {--clear= : Clear Database table from records older than X days}
                             {--timeout=5 : Inout API Call timeout}';
 
@@ -55,10 +57,11 @@ class SyncCourierOffices extends Command
             return 1;
         }
 
-        $companyCouriers = $this->getCompanyCouriers();
+        /** @var InoutCompanyCourier $companyCourier */
+        $companyCourier = $this->getCompanyCourier();
 
-        if($companyCouriers->isEmpty()) {
-            $this->error('Inout Company Couriers table is empty. Please sync company couriers before continue!');
+        if(!$companyCourier) {
+            $this->error('Inout Company Courier cannot be found!');
             return 1;
         }
 
@@ -70,7 +73,7 @@ class SyncCourierOffices extends Command
 
             $inout = $this->initInoutClient();
 
-            $this->insertOffices($inout, $companyCouriers);
+            $this->insertOffices($inout, $companyCourier);
 
             $this->info(PHP_EOL . 'Status: ' . self::API_STATUS_OK);
 
@@ -90,31 +93,28 @@ class SyncCourierOffices extends Command
 
     /**
      * @param Inout $inout
-     * @param Collection $companyCouriers
+     * @param InoutCompanyCourier $companyCourier
      * @return void
      * @throws InoutException
      */
-    protected function insertOffices(Inout $inout, Collection $companyCouriers) : void
+    protected function insertOffices(Inout $inout, InoutCompanyCourier $companyCourier) : void
     {
-        /** @var InoutCompanyCourier $companyCourier */
-        foreach ($companyCouriers as $companyCourier) {
-            $this->info("Sync $companyCourier->name Offices");
+        $this->info("Sync $companyCourier->name Offices");
 
-            $response = $inout->getCourierOffices($companyCourier->courier_id);
+        $response = $inout->getCourierOffices($companyCourier->courier_id);
 
-            if (! empty($response)) {
+        if (! empty($response)) {
 
-                $bar = $this->output->createProgressBar(
-                    count($response)
-                );
+            $bar = $this->output->createProgressBar(
+                count($response)
+            );
 
-                foreach ($response as $office) {
-                    InoutCourierOffice::create($this->getOfficeData($office));
-                    $bar->advance();
-                }
-
-                $bar->finish();
+            foreach ($response as $office) {
+                InoutCourierOffice::create($this->getOfficeData($office));
+                $bar->advance();
             }
+
+            $bar->finish();
         }
     }
 
@@ -123,7 +123,7 @@ class SyncCourierOffices extends Command
      *
      * @return void
      */
-    private function clear()
+    protected function clear()
     {
         if ($days = $this->option('clear')) {
             $clearDate = Carbon::now()->subDays($days)->format('Y-m-d H:i:s');
@@ -139,7 +139,7 @@ class SyncCourierOffices extends Command
     /**
      * @return Inout
      */
-    private function initInoutClient(): Inout
+    protected function initInoutClient(): Inout
     {
         $inout = new Inout();
 
@@ -154,7 +154,7 @@ class SyncCourierOffices extends Command
      * @param array $data
      * @return array
      */
-    private function getOfficeData(array $data): array
+    protected function getOfficeData(array $data): array
     {
         return [
             'office_id' => data_get($data, 'ID'),
@@ -178,10 +178,14 @@ class SyncCourierOffices extends Command
     }
 
     /**
-     * @return Collection
+     * @return Model|null
      */
-    private function getCompanyCouriers(): Collection
+    protected function getCompanyCourier(): Model|null
     {
-        return InoutCompanyCourier::all();
+        $courierId = $this->argument('courier_id');
+
+        return InoutCompanyCourier::query()
+            ->where('courier_id', $courierId)
+            ->first();
     }
 }
