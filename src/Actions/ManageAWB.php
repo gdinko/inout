@@ -2,7 +2,10 @@
 
 namespace Mchervenkov\Inout\Actions;
 
+use Illuminate\Validation\ValidationException;
 use Mchervenkov\Inout\Exceptions\InoutException;
+use Mchervenkov\Inout\Exceptions\InoutValidationException;
+use Mchervenkov\Inout\Hydrators\PickupAwbCreation;
 
 trait ManageAWB
 {
@@ -64,7 +67,7 @@ trait ManageAWB
      * website by taking advantage of "Shipment History Web Service".
      *
      * GET / Shipment_History_Web_Service_v1.4
-     * 
+     *
      * @param string $awbNumber
      * @param string|null $lang
      * @return mixed
@@ -76,5 +79,22 @@ trait ManageAWB
             'testMode' => $this->testMode,
             'lang' => $lang,
         ]);
+    }
+
+    /**
+     * We can now offer you the ability to a pick up request for a shipment directly from your company’s software or
+     * website by taking advantage of "Shipment Creation".
+     *
+     * POST / Pickup_AWB_Creation_Web_Service-v1.0
+     *
+     * @param PickupAwbCreation $pickupAwbCreation
+     * @return mixed
+     * @throws InoutException
+     * @throws ValidationException
+     * @throws InoutValidationException
+     */
+    public function pickupAwbCreation(PickupAwbCreation $pickupAwbCreation): mixed
+    {
+        return $this->post('awb/pickup', $pickupAwbCreation->validated());
     }
 }

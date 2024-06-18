@@ -6,7 +6,9 @@ use Mchervenkov\Inout\Actions\ManageAdditionalServices;
 use Mchervenkov\Inout\Actions\ManageAWB;
 use Mchervenkov\Inout\Actions\ManageCompanies;
 use Mchervenkov\Inout\Actions\ManageCouriers;
+use Mchervenkov\Inout\Actions\ManageFulfilments;
 use Mchervenkov\Inout\Actions\ManageLocations;
+use Mchervenkov\Inout\Actions\ManageShipments;
 
 class Inout
 {
@@ -16,6 +18,8 @@ class Inout
     use ManageAWB;
     use ManageAdditionalServices;
     use ManageLocations;
+    use ManageFulfilments;
+    use ManageShipments;
 
     public const SIGNATURE = 'CARRIER_INOUT';
 
