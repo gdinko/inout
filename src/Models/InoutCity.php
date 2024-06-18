@@ -3,8 +3,10 @@
 namespace Mchervenkov\Inout\Models;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * Mchervenkov\Inout\Models\InoutCity
@@ -21,6 +23,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $state_name
  * @property string $state_name_en
  * @property int $manual_edit
+ * @property Collection $offices
  * @method static Builder|InoutCompanyCourier create(array $attributes)
  * @method static Builder|InoutCompanyCourier where($column, $operator = null, $value = null, $boolean = 'and')
  */
@@ -43,4 +46,14 @@ class InoutCity extends Model
         'state_name_en',
         'manual_edit',
     ];
+
+    /**
+     * Offices
+     *
+     * @return HasMany
+     */
+    public function offices(): HasMany
+    {
+        return $this->hasMany(InoutCourierOffice::class);
+    }
 }

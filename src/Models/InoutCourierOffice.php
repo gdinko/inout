@@ -5,6 +5,7 @@ namespace Mchervenkov\Inout\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * Mchervenkov\Inout\Models\InoutCourierOffice
@@ -27,6 +28,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $work_end_saturday
  * @property string $post_code
  * @property string $region
+ * @property string $city_uuid
+ * @property InoutCity $city
  * @method static Builder|InoutCompanyCourier create(array $attributes)
  * @method static Builder|InoutCompanyCourier where($column, $operator = null, $value = null, $boolean = 'and')
  */
@@ -54,5 +57,16 @@ class  InoutCourierOffice extends Model
         'work_end_saturday',
         'post_code',
         'region',
+        'city_uuid',
     ];
+
+    /**
+     * Inout City
+     *
+     * @return BelongsTo
+     */
+    public function city(): BelongsTo
+    {
+        return $this->belongsTo(InoutCity::class, 'city_id', 'id');
+    }
 }

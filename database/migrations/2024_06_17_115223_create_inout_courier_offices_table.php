@@ -16,8 +16,8 @@ return new class extends Migration
         Schema::create('inout_courier_offices', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('office_id');
-            $table->unsignedBigInteger('city_id');
-            $table->unsignedBigInteger('courier_id');
+            $table->unsignedBigInteger('city_id')->index();
+            $table->unsignedBigInteger('courier_id')->index();
             $table->unsignedBigInteger('courier_office_id');
             $table->unsignedBigInteger('group_city_id');
             $table->string('office_name', 255);
@@ -32,6 +32,7 @@ return new class extends Migration
             $table->string('work_end_saturday', 255)->nullable();
             $table->string('post_code', 255)->nullable();
             $table->string('region', 255)->nullable();
+            $table->char('city_uuid', 36)->nullable();
             $table->timestamps();
         });
     }

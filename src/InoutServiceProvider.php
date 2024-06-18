@@ -3,9 +3,12 @@
 namespace Mchervenkov\Inout;
 
 use Illuminate\Support\ServiceProvider;
+use Mchervenkov\Inout\Commands\MapInoutCities;
 use Mchervenkov\Inout\Commands\SyncCities;
 use Mchervenkov\Inout\Commands\SyncCompanyCouriers;
 use Mchervenkov\Inout\Commands\SyncCountries;
+use Mchervenkov\Inout\Commands\SyncCourierOffices;
+use Mchervenkov\Inout\Commands\SyncRomaniaCounties;
 
 class InoutServiceProvider extends ServiceProvider
 {
@@ -39,6 +42,9 @@ class InoutServiceProvider extends ServiceProvider
                 SyncCities::class,
                 SyncCompanyCouriers::class,
                 SyncCountries::class,
+                SyncCourierOffices::class,
+                SyncRomaniaCounties::class,
+                MapInoutCities::class,
             ]);
         }
     }

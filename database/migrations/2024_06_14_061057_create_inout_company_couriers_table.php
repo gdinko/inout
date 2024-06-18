@@ -15,7 +15,8 @@ return new class extends Migration
     {
         Schema::create('inout_company_couriers', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('courier_id');
+            $table->unsignedBigInteger('courier_id')->index();
+            $table->string('signature', 255);
             $table->string('name', 255);
             $table->tinyInteger('to_office')->default(0);
             $table->tinyInteger('to_address')->default(0);

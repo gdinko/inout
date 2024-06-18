@@ -30,4 +30,6 @@ class InoutCountry extends Model
         'cyrillic_name',
         'iso_code',
     ];
+
+
 }

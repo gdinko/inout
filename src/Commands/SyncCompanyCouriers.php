@@ -128,13 +128,27 @@ class SyncCompanyCouriers extends Command
      */
     private function getCourierData(array $data): array
     {
+        $name = data_get($data, 'NAME');
+
         return [
             'courier_id' => data_get($data, 'ID'),
-            'name' => data_get($data, 'NAME'),
+            'signature' => $this->getSignature($name),
+            'name' => $name,
             'to_office' => data_get($data, 'TO_OFFICE'),
             'to_address' => data_get($data, 'TO_ADDRESS'),
             'country' => data_get($data, 'COUNTRY'),
             'currency' => data_get($data, 'CURRENCY'),
         ];
+    }
+
+    /**
+     * @param string $courierName
+     * @return string
+     */
+    private function getSignature(string $courierName): string
+    {
+        $toUpper = strtoupper(trim($courierName));
+
+        return 'INOUT_' . str_replace(' ', '_', $toUpper);
     }
 }
