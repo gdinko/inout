@@ -25,7 +25,7 @@ trait ManageFulfilments
     {
         return $this->post(
             'fulfilment/waybills-history',
-            array_merge($waybillsHistory->validated(), ['testMode' => $this->testMode])
+            array_merge($waybillsHistory->validated(), ['testMode' => $this->getTestMode()])
         );
     }
 }

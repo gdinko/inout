@@ -57,7 +57,7 @@ class SyncCourierOffices extends Command
             return 1;
         }
 
-        /** @var InoutCompanyCourier $companyCourier */
+        /** @var InoutCompanyCourier|null $companyCourier */
         $companyCourier = $this->getCompanyCourier();
 
         if(!$companyCourier) {

@@ -26,7 +26,7 @@ trait ManageShipments
     {
         return $this->post(
             'createAWB',
-            array_merge($shipment->validated(), ['testMode' => $this->testMode])
+            array_merge($shipment->validated(), ['testMode' => $this->getTestMode()])
         );
     }
 

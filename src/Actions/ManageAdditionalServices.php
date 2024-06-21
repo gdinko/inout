@@ -23,7 +23,7 @@ trait ManageAdditionalServices
     public function codInformation(string $referenceNumber): mixed
     {
         return $this->get("check-cod-by-order/$referenceNumber", [
-            'testMode' => $this->testMode
+            'testMode' => $this->getTestMode()
         ]);
     }
 
@@ -40,7 +40,7 @@ trait ManageAdditionalServices
     public function phoneCallHistory(string $awbNumber): mixed
     {
         return $this->get("check-actions/$awbNumber", [
-            'testMode' => $this->testMode
+            'testMode' => $this->getTestMode()
         ]);
     }
 }

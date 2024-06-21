@@ -22,7 +22,7 @@ trait ManageAWB
     public function awbDetails(string $awbNumber): mixed
     {
         return $this->get("get-awb/$awbNumber", [
-            'testMode' => $this->testMode
+            'testMode' => $this->getTestMode()
         ]);
     }
 
@@ -40,7 +40,7 @@ trait ManageAWB
     public function awbPrint(string $awbNumber, int $printFileType = 1): mixed
     {
         return $this->get("print/$awbNumber", [
-            'testMode' => $this->testMode,
+            'testMode' => $this->getTestMode(),
             'printFileType' => $printFileType,
         ]);
     }
@@ -58,7 +58,7 @@ trait ManageAWB
     public function awbStatus(string $awbNumber): mixed
     {
         return $this->get("get-status/$awbNumber", [
-            'testMode' => $this->testMode
+            'testMode' => $this->getTestMode()
         ]);
     }
 
@@ -76,7 +76,7 @@ trait ManageAWB
     public function awbHistory(string $awbNumber, string $lang = null): mixed
     {
         return $this->get("get-status/history/$awbNumber", [
-            'testMode' => $this->testMode,
+            'testMode' => $this->getTestMode(),
             'lang' => $lang,
         ]);
     }

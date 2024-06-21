@@ -147,6 +147,16 @@ class Inout
     }
 
     /**
+     * getTestMode
+     *
+     * @return int
+     */
+    public function getTestMode(): int
+    {
+        return $this->testMode;
+    }
+
+    /**
      * getCompanyId
      *
      * @return int
@@ -165,16 +175,6 @@ class Inout
     public function setCompanyId(int $companyId)
     {
         $this->companyId = $companyId;
-    }
-
-    /**
-     * getTestMode
-     *
-     * @return int
-     */
-    public function TestMode(): int
-    {
-        return $this->testMode;
     }
 
     /**

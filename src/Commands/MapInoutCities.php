@@ -97,7 +97,7 @@ class MapInoutCities extends Command
 
         $countryCode = $this->argument('country_code');
 
-        /** @var InoutCompanyCourier $courier */
+        /** @var InoutCompanyCourier|null $courier */
         $courier = $this->getCourier();
 
         if ($courier) {

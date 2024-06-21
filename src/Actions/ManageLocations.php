@@ -23,7 +23,7 @@ trait ManageLocations
     public function getCitiesSuggestions(int $countryId, string $searchString, int $searchAllFields = 1): mixed
     {
         return $this->get("get-cities/suggestions/$countryId/$searchString", [
-            'testMode' => $this->testMode,
+            'testMode' => $this->getTestMode(),
             'searchAllFields' => $searchAllFields
         ]);
     }

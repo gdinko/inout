@@ -3,6 +3,7 @@
 namespace Mchervenkov\Inout;
 
 use Illuminate\Support\ServiceProvider;
+use Mchervenkov\Inout\Commands\GetInoutApiStatus;
 use Mchervenkov\Inout\Commands\MapInoutCities;
 use Mchervenkov\Inout\Commands\SyncCities;
 use Mchervenkov\Inout\Commands\SyncCompanyCouriers;
@@ -45,6 +46,7 @@ class InoutServiceProvider extends ServiceProvider
                 SyncCourierOffices::class,
                 SyncCounties::class,
                 MapInoutCities::class,
+                GetInoutApiStatus::class,
             ]);
         }
     }
