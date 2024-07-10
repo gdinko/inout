@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * Mchervenkov\Inout\Models\InoutCourierOffice
@@ -68,5 +69,17 @@ class  InoutCourierOffice extends Model
     public function city(): BelongsTo
     {
         return $this->belongsTo(InoutCity::class, 'city_id', 'city_id');
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function cityMap(): HasMany
+    {
+        return $this->hasMany(
+            CarrierCityMap::class,
+            'uuid',
+            'city_uuid'
+        );
     }
 }
