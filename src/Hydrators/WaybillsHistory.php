@@ -30,7 +30,7 @@ class WaybillsHistory
     {
         return [
             'awbs' => 'required|array',
-            'awbs.*.awb' => 'required|string'
+            'awbs.*.awb' => 'required|string',
         ];
     }
 

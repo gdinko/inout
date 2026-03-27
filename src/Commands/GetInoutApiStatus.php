@@ -85,7 +85,7 @@ class GetInoutApiStatus extends Command
     {
         $inout = new Inout();
 
-        if($timeout = $this->option('timeout')) {
+        if ($timeout = $this->option('timeout')) {
             $inout->setTimeout((int)$timeout);
         }
 

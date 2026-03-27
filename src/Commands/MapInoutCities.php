@@ -3,18 +3,16 @@
 namespace Mchervenkov\Inout\Commands;
 
 use Illuminate\Console\Command;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use Mchervenkov\Inout\Exceptions\InoutImportValidationException;
 use Mchervenkov\Inout\Inout;
 use Mchervenkov\Inout\Models\CarrierCityMap;
-use Mchervenkov\Inout\Models\InoutCity;
 use Mchervenkov\Inout\Models\InoutCompanyCourier;
 use Mchervenkov\Inout\Models\InoutCountry;
 use Mchervenkov\Inout\Models\InoutCourierOffice;
 use Ramsey\Uuid\Uuid;
-use Illuminate\Support\Facades\Schema;
 
 class MapInoutCities extends Command
 {
@@ -80,18 +78,21 @@ class MapInoutCities extends Command
      */
     protected function import(Inout $inout): bool
     {
-        if(!Schema::hasTable('inout_cities')) {
+        if (! Schema::hasTable('inout_cities')) {
             $this->error('Inout Cities table does not exist. Please run Inout migrations before continue!');
+
             return false;
         }
 
-        if(!Schema::hasTable('inout_courier_offices')) {
+        if (! Schema::hasTable('inout_courier_offices')) {
             $this->error('Inout Courier Offices table does not exist. Please run Inout migrations before continue!');
+
             return false;
         }
 
-        if(!Schema::hasTable('inout_countries')) {
+        if (! Schema::hasTable('inout_countries')) {
             $this->error('Inout Countries table does not exist. Please run Inout migrations before continue!');
+
             return false;
         }
 
@@ -112,7 +113,7 @@ class MapInoutCities extends Command
                 ->where('country_code', strtoupper($countryCode))
                 ->delete();
 
-            if($courier->offices->isNotEmpty()) {
+            if ($courier->offices->isNotEmpty()) {
 
                 $this->info("Map Cities for Courier: {$courier->name}");
 
@@ -224,7 +225,7 @@ class MapInoutCities extends Command
     {
         $inout = new Inout();
 
-        if($timeout = $this->option('timeout')) {
+        if ($timeout = $this->option('timeout')) {
             $inout->setTimeout((int)$timeout);
         }
 
@@ -252,7 +253,7 @@ class MapInoutCities extends Command
         return InoutCompanyCourier::query()
             ->where('courier_id', $countryCode)
             ->with([
-                'offices.city'
+                'offices.city',
             ])
             ->first();
     }

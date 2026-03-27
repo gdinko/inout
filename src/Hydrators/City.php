@@ -33,7 +33,7 @@ class City
     {
         $cityRules = [
             'county_id' => 'nullable|numeric',
-            'office_id' => 'nullable|numeric'
+            'office_id' => 'nullable|numeric',
         ];
 
         $pagingRules = $this->getPagingValidationRules();

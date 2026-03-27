@@ -26,6 +26,6 @@ class InoutCounty extends Model
     protected $fillable = [
         'county_id',
         'abr',
-        'name'
+        'name',
     ];
 }

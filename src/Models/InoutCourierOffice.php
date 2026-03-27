@@ -34,7 +34,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static Builder|InoutCompanyCourier create(array $attributes)
  * @method static Builder|InoutCompanyCourier where($column, $operator = null, $value = null, $boolean = 'and')
  */
-class  InoutCourierOffice extends Model
+class InoutCourierOffice extends Model
 {
     use HasFactory;
 

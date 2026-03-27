@@ -48,7 +48,6 @@ class Inout
      */
     private int $companyId;
 
-
     public function __construct()
     {
         $this->apiToken = config('inout.api_token');

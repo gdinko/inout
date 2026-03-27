@@ -78,7 +78,7 @@ class SyncCounties extends Command
      * @return void
      * @throws InoutException
      */
-    protected function insertCounties(Inout $inout) : void
+    protected function insertCounties(Inout $inout): void
     {
         $countryId = $this->argument('country_id');
 
@@ -126,7 +126,7 @@ class SyncCounties extends Command
     {
         $inout = new Inout();
 
-        if($timeout = $this->option('timeout')) {
+        if ($timeout = $this->option('timeout')) {
             $inout->setTimeout((int)$timeout);
         }
 

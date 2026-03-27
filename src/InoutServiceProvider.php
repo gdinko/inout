@@ -7,9 +7,9 @@ use Mchervenkov\Inout\Commands\GetInoutApiStatus;
 use Mchervenkov\Inout\Commands\MapInoutCities;
 use Mchervenkov\Inout\Commands\SyncCities;
 use Mchervenkov\Inout\Commands\SyncCompanyCouriers;
+use Mchervenkov\Inout\Commands\SyncCounties;
 use Mchervenkov\Inout\Commands\SyncCountries;
 use Mchervenkov\Inout\Commands\SyncCourierOffices;
-use Mchervenkov\Inout\Commands\SyncCounties;
 
 class InoutServiceProvider extends ServiceProvider
 {

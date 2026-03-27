@@ -37,7 +37,7 @@ class TestCase extends Orchestra
         ]);
 
         config()->set('app.key', 'base64:' . base64_encode(
-                Encrypter::generateKey(config()['app.cipher'])
-            ));
+            Encrypter::generateKey(config()['app.cipher'])
+        ));
     }
 }

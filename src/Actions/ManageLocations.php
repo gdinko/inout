@@ -24,7 +24,7 @@ trait ManageLocations
     {
         return $this->get("get-cities/suggestions/$countryId/$searchString", [
             'testMode' => $this->getTestMode(),
-            'searchAllFields' => $searchAllFields
+            'searchAllFields' => $searchAllFields,
         ]);
     }
 
@@ -73,6 +73,4 @@ trait ManageLocations
     {
         return $this->get("get-counties/$countryId");
     }
-
-
 }

@@ -77,7 +77,7 @@ class SyncCountries extends Command
      * @return void
      * @throws InoutException
      */
-    protected function insertCountries(Inout $inout) : void
+    protected function insertCountries(Inout $inout): void
     {
         $response = $inout->getCountries();
 
@@ -113,7 +113,7 @@ class SyncCountries extends Command
     {
         $inout = new Inout();
 
-        if($timeout = $this->option('timeout')) {
+        if ($timeout = $this->option('timeout')) {
             $inout->setTimeout((int)$timeout);
         }
 

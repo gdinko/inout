@@ -78,7 +78,7 @@ class SyncCompanyCouriers extends Command
      * @return void
      * @throws InoutException
      */
-    protected function insertCouriers(Inout $inout) : void
+    protected function insertCouriers(Inout $inout): void
     {
         $response = $inout->getCouriers();
 
@@ -116,7 +116,7 @@ class SyncCompanyCouriers extends Command
     {
         $inout = new Inout();
 
-        if($timeout = $this->option('timeout')) {
+        if ($timeout = $this->option('timeout')) {
             $inout->setTimeout((int)$timeout);
         }
 

@@ -4,7 +4,6 @@ namespace Mchervenkov\Inout\Commands;
 
 use Carbon\Carbon;
 use Illuminate\Console\Command;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Schema;
 use Mchervenkov\Inout\Exceptions\InoutException;
@@ -52,16 +51,18 @@ class SyncCourierOffices extends Command
     public function handle()
     {
 
-        if(!Schema::hasTable('inout_company_couriers')) {
+        if (! Schema::hasTable('inout_company_couriers')) {
             $this->error('Inout Company Couriers table does not exist. Please run inout migration before continue!');
+
             return 1;
         }
 
         /** @var InoutCompanyCourier|null $companyCourier */
         $companyCourier = $this->getCompanyCourier();
 
-        if(!$companyCourier) {
+        if (! $companyCourier) {
             $this->error('Inout Company Courier cannot be found!');
+
             return 1;
         }
 
@@ -97,7 +98,7 @@ class SyncCourierOffices extends Command
      * @return void
      * @throws InoutException
      */
-    protected function insertOffices(Inout $inout, InoutCompanyCourier $companyCourier) : void
+    protected function insertOffices(Inout $inout, InoutCompanyCourier $companyCourier): void
     {
         $this->info("Sync $companyCourier->name Offices");
 
@@ -143,7 +144,7 @@ class SyncCourierOffices extends Command
     {
         $inout = new Inout();
 
-        if($timeout = $this->option('timeout')) {
+        if ($timeout = $this->option('timeout')) {
             $inout->setTimeout((int)$timeout);
         }
 

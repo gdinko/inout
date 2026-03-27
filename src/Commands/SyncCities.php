@@ -84,7 +84,7 @@ class SyncCities extends Command
      * @return void
      * @throws InoutException
      */
-    protected function insertCities(Inout $inout, City $city, int $countryId) : void
+    protected function insertCities(Inout $inout, City $city, int $countryId): void
     {
         $response = $inout->getCities($city, $countryId);
 
@@ -128,7 +128,7 @@ class SyncCities extends Command
     {
         $inout = new Inout();
 
-        if($timeout = $this->option('timeout')) {
+        if ($timeout = $this->option('timeout')) {
             $inout->setTimeout((int)$timeout);
         }
 
@@ -141,7 +141,7 @@ class SyncCities extends Command
     protected function initCityHydrator(): City
     {
         return new City([
-            'paging' => 0
+            'paging' => 0,
         ]);
     }
 
