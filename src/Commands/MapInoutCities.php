@@ -113,7 +113,7 @@ class MapInoutCities extends Command
         $hasMissingCities = false;
 
         foreach ($courier->offices as $office) {
-            if ($office->city === null) {
+            if ($office->city === null && $office->groupCity === null) {
                 $this->error("Missing city: office_id={$office->office_id}, city_id={$office->city_id}. Sync cities before mapping.");
                 $hasMissingCities = true;
             }
@@ -130,13 +130,6 @@ class MapInoutCities extends Command
                 /** @var InoutCountry $country */
                 $country = $this->getCountry($countryCode);
 
-                CarrierCityMap::where(
-                    'carrier_signature',
-                    $inout->getSignature()
-                )
-                    ->where('country_code', strtoupper($countryCode))
-                    ->delete();
-
                 if ($courier->offices->isNotEmpty()) {
 
                     $this->info("Map Cities for Courier: {$courier->name}");
@@ -152,29 +145,38 @@ class MapInoutCities extends Command
                         /** @var InoutCourierOffice $office */
                         foreach ($courier->offices as $office) {
 
+                            $city = $office->city ?? $office->groupCity;
+                            $postCode = $office->post_code ?? $city->postal_code ?? '';
+
                             $name = $this->normalizeCityName(
-                                $office->city->name_en
+                                $city->name_en ?: ($city->name_local ?: $office->city_name)
                             );
 
                             $nameSlug = $this->getSlug($name);
 
                             $slug = $this->getSlug(
-                                $nameSlug . ' ' . $office->city->postal_code
+                                $country->iso_code . ' ' . $nameSlug . ' ' . $postCode
                             );
 
                             $data = [
                                 'carrier_signature' => $inout->getSignature(),
-                                'carrier_city_id' => $office->city->city_id,
+                                'carrier_city_id' => $city->city_id,
                                 'country_code' => $country->iso_code,
-                                'region' => Str::title($office->region),
+                                'region' => Str::title($office->region ?? ''),
                                 'name' => $name,
                                 'name_slug' => $nameSlug,
-                                'post_code' => $office->city->postal_code,
+                                'post_code' => $postCode,
                                 'slug' => $slug,
                                 'uuid' => $this->getUuid($slug),
                             ];
 
-                            CarrierCityMap::create(
+                            CarrierCityMap::query()->updateOrCreate(
+                                [
+                                    'carrier_signature' => $data['carrier_signature'],
+                                    'country_code' => $data['country_code'],
+                                    'carrier_city_id' => $data['carrier_city_id'],
+                                    'post_code' => $postCode,
+                                ],
                                 $data
                             );
 
@@ -281,6 +283,7 @@ class MapInoutCities extends Command
             ->where('courier_id', $countryCode)
             ->with([
                 'offices.city',
+                'offices.groupCity',
             ])
             ->first();
     }

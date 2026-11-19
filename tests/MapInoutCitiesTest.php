@@ -42,8 +42,29 @@ it('maps cities with a lowercase country code', function (): void {
     $this->artisan('inout:map-cities', ['courier_id' => 19, 'country_code' => 'gr'])
         ->assertExitCode(0);
 
-    expect(CarrierCityMap::first()->name)->toBe('Athens');
-    expect(InoutCourierOffice::first()->city_uuid)->toBe(CarrierCityMap::first()->uuid);
+    $mapping = CarrierCityMap::where('carrier_city_id', 21961326)->firstOrFail();
+    expect($mapping->name)->toBe('Athens');
+    expect(InoutCourierOffice::first()->city_uuid)->toBe($mapping->uuid);
+});
+
+it('uses the group city without changing original identifiers or the office postcode', function (): void {
+    InoutCity::create(['city_id' => 1, 'name_en' => 'Athens', 'postal_code' => '100']);
+    InoutCourierOffice::first()->update(['post_code' => '101']);
+
+    $this->artisan('inout:map-cities', ['courier_id' => 19, 'country_code' => 'GR'])
+        ->assertExitCode(0);
+    $this->artisan('inout:map-cities', ['courier_id' => 19, 'country_code' => 'GR'])
+        ->assertExitCode(0);
+
+    $office = InoutCourierOffice::first();
+    $mapping = CarrierCityMap::where('post_code', '101')->firstOrFail();
+    expect($office->city_id)->toBe(21961326);
+    expect($office->group_city_id)->toBe(1);
+    expect($office->post_code)->toBe('101');
+    expect($office->city)->toBeNull();
+    expect($office->groupCity->name_en)->toBe('Athens');
+    expect($office->city_uuid)->toBe($mapping->uuid);
+    expect(CarrierCityMap::count())->toBe(2);
 });
 
 it('rolls back mappings when saving an office fails', function (): void {
