@@ -4,6 +4,7 @@ namespace Mchervenkov\Inout\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use Mchervenkov\Inout\Exceptions\InoutImportValidationException;
@@ -56,11 +57,13 @@ class MapInoutCities extends Command
 
             $inout = $this->initInoutClient();
 
-            $this->import($inout);
+            if (! $this->import($inout)) {
+                return 1;
+            }
 
             $this->newLine(2);
 
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             $this->newLine();
             $this->error(
                 $e->getMessage()
@@ -96,88 +99,112 @@ class MapInoutCities extends Command
             return false;
         }
 
-        $countryCode = $this->argument('country_code');
+        $countryCode = strtoupper($this->argument('country_code'));
 
         /** @var InoutCompanyCourier|null $courier */
         $courier = $this->getCourier();
 
-        if ($courier) {
+        if (! $courier) {
+            $this->error('Inout Company Courier cannot be found!');
 
-            /** @var InoutCountry $country */
-            $country = $this->getCountry($countryCode);
+            return false;
+        }
 
-            CarrierCityMap::where(
-                'carrier_signature',
-                $inout->getSignature()
-            )
-                ->where('country_code', strtoupper($countryCode))
-                ->delete();
+        $hasMissingCities = false;
 
-            if ($courier->offices->isNotEmpty()) {
-
-                $this->info("Map Cities for Courier: {$courier->name}");
-
-                $bar = $this->output->createProgressBar(
-                    count($courier->offices)
-                );
-
-                $bar->start();
-
-                try {
-
-                    /** @var InoutCourierOffice $office */
-                    foreach ($courier->offices as $office) {
-
-                        $name = $this->normalizeCityName(
-                            $office->city->name_en
-                        );
-
-                        $nameSlug = $this->getSlug($name);
-
-                        $slug = $this->getSlug(
-                            $nameSlug . ' ' . $office->city->postal_code
-                        );
-
-                        $data = [
-                            'carrier_signature' => $inout->getSignature(),
-                            'carrier_city_id' => $office->city->city_id,
-                            'country_code' => $country->iso_code,
-                            'region' => Str::title($office->region),
-                            'name' => $name,
-                            'name_slug' => $nameSlug,
-                            'post_code' => $office->city->postal_code,
-                            'slug' => $slug,
-                            'uuid' => $this->getUuid($slug),
-                        ];
-
-                        CarrierCityMap::create(
-                            $data
-                        );
-
-                        $office->city_uuid = $data['uuid'];
-                        $office->save();
-
-                        $bar->advance();
-                    }
-
-                } catch (InoutImportValidationException $eive) {
-                    $this->newLine();
-                    $this->error(
-                        $eive->getMessage()
-                    );
-                    $this->info(
-                        print_r($eive->getData(), true)
-                    );
-                    $this->error(
-                        print_r($eive->getErrors(), true)
-                    );
-                }
-
-                $bar->finish();
+        foreach ($courier->offices as $office) {
+            if ($office->city === null) {
+                $this->error("Missing city: office_id={$office->office_id}, city_id={$office->city_id}. Sync cities before mapping.");
+                $hasMissingCities = true;
             }
         }
 
-        return true;
+        if ($hasMissingCities) {
+            return false;
+        }
+
+        return DB::transaction(function () use ($inout, $countryCode, $courier): bool {
+
+            if ($courier) {
+
+                /** @var InoutCountry $country */
+                $country = $this->getCountry($countryCode);
+
+                CarrierCityMap::where(
+                    'carrier_signature',
+                    $inout->getSignature()
+                )
+                    ->where('country_code', strtoupper($countryCode))
+                    ->delete();
+
+                if ($courier->offices->isNotEmpty()) {
+
+                    $this->info("Map Cities for Courier: {$courier->name}");
+
+                    $bar = $this->output->createProgressBar(
+                        count($courier->offices)
+                    );
+
+                    $bar->start();
+
+                    try {
+
+                        /** @var InoutCourierOffice $office */
+                        foreach ($courier->offices as $office) {
+
+                            $name = $this->normalizeCityName(
+                                $office->city->name_en
+                            );
+
+                            $nameSlug = $this->getSlug($name);
+
+                            $slug = $this->getSlug(
+                                $nameSlug . ' ' . $office->city->postal_code
+                            );
+
+                            $data = [
+                                'carrier_signature' => $inout->getSignature(),
+                                'carrier_city_id' => $office->city->city_id,
+                                'country_code' => $country->iso_code,
+                                'region' => Str::title($office->region),
+                                'name' => $name,
+                                'name_slug' => $nameSlug,
+                                'post_code' => $office->city->postal_code,
+                                'slug' => $slug,
+                                'uuid' => $this->getUuid($slug),
+                            ];
+
+                            CarrierCityMap::create(
+                                $data
+                            );
+
+                            $office->city_uuid = $data['uuid'];
+                            $office->save();
+
+                            $bar->advance();
+                        }
+
+                    } catch (InoutImportValidationException $eive) {
+                        $this->newLine();
+                        $this->error(
+                            $eive->getMessage()
+                        );
+                        $this->info(
+                            print_r($eive->getData(), true)
+                        );
+                        $this->error(
+                            print_r($eive->getErrors(), true)
+                        );
+
+                        throw $eive;
+                    }
+
+                    $bar->finish();
+                }
+            }
+
+            return true;
+        });
     }
 
     /**

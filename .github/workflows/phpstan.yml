@@ -31,4 +31,4 @@ jobs:
         run: ./vendor/bin/phpstan --error-format=github
 
       - name: Test courier office synchronization
-        run: ./vendor/bin/pest tests/SyncCourierOfficesTest.php
+        run: ./vendor/bin/pest tests/SyncCourierOfficesTest.php tests/MapInoutCitiesTest.php
