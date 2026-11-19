@@ -111,7 +111,13 @@ class SyncCourierOffices extends Command
             );
 
             foreach ($response as $office) {
-                InoutCourierOffice::create($this->getOfficeData($office));
+                InoutCourierOffice::query()->updateOrCreate(
+                    [
+                        'courier_id' => $companyCourier->courier_id,
+                        'office_id' => data_get($office, 'ID'),
+                    ],
+                    $this->getOfficeData($office)
+                );
                 $bar->advance();
             }
 
@@ -131,8 +137,9 @@ class SyncCourierOffices extends Command
 
             $this->info("-> Inout Company Courier Offices: Clearing entries older than: $clearDate");
 
-            InoutCompanyCourier::query()
-                ->where('created_at', '<=', $clearDate)
+            InoutCourierOffice::query()
+                ->where('courier_id', $this->argument('courier_id'))
+                ->where('updated_at', '<=', $clearDate)
                 ->delete();
         }
     }

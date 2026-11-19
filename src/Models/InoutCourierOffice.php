@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property int $office_id
  * @property int $city_id
  * @property int $courier_id
- * @property int $courier_office_id
+ * @property int|null $courier_office_id
  * @property int $group_city_id
  * @property string $office_name
  * @property string $courier_office_code
